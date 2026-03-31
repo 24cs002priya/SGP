@@ -1,7 +1,0 @@
-# Environment variables (IMPORTANT)
-.env
-
-# Node modules / dependencies
-node_modules/
-
-seed.js
