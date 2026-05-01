@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Intellecta — Internship Portal</title>
+<link rel="stylesheet" href="../css/main.css"/>
+<style>
+.btn-primary{width:100%;justify-content:center;padding:12px;font-size:14px;border-radius:13px;margin-top:2px;}
+.form-input{background:rgba(255,255,255,0.75);}
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--c-muted);font-size:11px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(196,184,240,0.3);}
+</style>
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card glass">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <span class="auth-logo-text">Rekroot</span>
+    </div>
+
+    <div id="loginView">
+      <h2>Welcome back</h2>
+      <p class="auth-sub">Sign in to your internship portal</p>
+      <div class="error-msg" id="loginError"></div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" id="loginEmail" placeholder="you@college.edu"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="loginPassword" placeholder="••••••••"/>
+      </div>
+      <button class="btn-primary" onclick="handleLogin()">
+        <span id="loginTxt">Sign In</span>
+        <span id="loginSpin" class="spinner" style="display:none;"></span>
+      </button>
+      <div class="auth-switch">No account? <a onclick="showRegister()">Create one</a></div>
+    </div>
+
+    <div id="registerView" style="display:none;">
+      <h2>Create account</h2>
+      <p class="auth-sub">Join the internship portal</p>
+      <div class="error-msg" id="regError"></div>
+      <div class="role-selector">
+        <button class="role-btn active" id="roleStudent" onclick="setRole('student')">🎓 Student</button>
+        <button class="role-btn" id="roleCoord" onclick="setRole('coordinator')">📋 Coordinator</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" id="rName" placeholder="Full name"/>
+        </div>
+        <div class="form-group" id="rollGrp">
+          <label class="form-label">Roll Number</label>
+          <input type="text" class="form-input" id="rRoll" placeholder="CS2021001"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" id="rEmail" placeholder="you@college.edu"/>
+      </div>
+      
+      <div class="form-group" id="coordGrp">
+        <label class="form-label">Assign to Coordinator</label>
+        <select class="form-select" id="rCoord">
+          <option value="">Loading Coordinators...</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="rPass" placeholder="Min 6 chars"/>
+        </div>
+        <div class="form-group" id="semGrp">
+          <label class="form-label">Semester</label>
+          <select class="form-select" id="rSem">
+            <option value="">Select</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="handleRegister()">
+        <span id="regTxt">Create Account</span>
+        <span id="regSpin" class="spinner" style="display:none;"></span>
+      </button>
+      <div class="auth-switch">Have an account? <a onclick="showLogin()">Sign in</a></div>
+    </div>
+  </div>
+</div>
+<div class="toast-container" id="toastContainer"></div>
+<script src="../js/api.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+let role='student';
+let coordinatorsLoaded = false;
+
+function setRole(r){
+  role=r;
+  document.getElementById('roleStudent').classList.toggle('active',r==='student');
+  document.getElementById('roleCoord').classList.toggle('active',r==='coordinator');
+  document.getElementById('rollGrp').style.display=r==='student'?'':'none';
+  document.getElementById('semGrp').style.display=r==='student'?'':'none';
+  document.getElementById('coordGrp').style.display=r==='student'?'':'none'; // Toggle Coordinator dropdown
+}
+
+function showRegister(){
+  document.getElementById('loginView').style.display='none';
+  document.getElementById('registerView').style.display='';
+  if(!coordinatorsLoaded) fetchCoordinators();
+}
+
+function showLogin(){
+  document.getElementById('registerView').style.display='none';
+  document.getElementById('loginView').style.display='';
+}
+
+// FETCH COORDINATORS
+async function fetchCoordinators() {
+  try {
+    const res = await API.get('/auth/coordinators');
+    if (res.success) {
+      const select = document.getElementById('rCoord');
+      if (res.data.length === 0) {
+        select.innerHTML = '<option value="">No coordinators available</option>';
+      } else {
+        select.innerHTML = '<option value="">Select your Coordinator</option>' + 
+          res.data.map(c => `<option value="${c._id}">${c.name} (${c.email})</option>`).join('');
+      }
+      coordinatorsLoaded = true;
+    }
+  } catch (err) {
+    console.error('Failed to load coordinators:', err);
+    document.getElementById('rCoord').innerHTML = '<option value="">Error loading coordinators</option>';
+  }
+}
+
+async function handleLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPassword').value;
+  const err=document.getElementById('loginError');
+  err.style.display='none';
+  if(!email||!pass){err.textContent='Please fill in all fields.';err.style.display='block';return;}
+  document.getElementById('loginTxt').style.display='none';
+  document.getElementById('loginSpin').style.display='inline-block';
+  try{
+    const data=await API.post('/auth/login',{email,password:pass});
+    if(data.success){
+      localStorage.setItem('token',data.token);
+      localStorage.setItem('user',JSON.stringify(data.user));
+      showToast('Welcome back, '+data.user.name.split(' ')[0]+'!','success');
+      setTimeout(()=>{window.location.href=data.user.role==='coordinator'?'coordinator.html':'student.html';},600);
+    }else{err.textContent=data.message||'Login failed.';err.style.display='block';}
+  }catch(e){err.textContent=e.message||'Server error.';err.style.display='block';}
+  finally{document.getElementById('loginTxt').style.display='';document.getElementById('loginSpin').style.display='none';}
+}
+
+async function handleRegister(){
+  const name=document.getElementById('rName').value.trim();
+  const email=document.getElementById('rEmail').value.trim();
+  const pass=document.getElementById('rPass').value;
+  const roll=document.getElementById('rRoll').value.trim();
+  const sem=document.getElementById('rSem').value;
+  const coord=document.getElementById('rCoord').value; // Get selected coordinator
+  const err=document.getElementById('regError');
+  
+  err.style.display='none';
+  if(!name||!email||!pass){err.textContent='Name, email and password required.';err.style.display='block';return;}
+  
+  // Validate coordinator selection for students
+  if(role === 'student' && !coord) {
+    err.textContent = 'Please select a coordinator.';
+    err.style.display = 'block';
+    return;
+  }
+
+  document.getElementById('regTxt').style.display='none';
+  document.getElementById('regSpin').style.display='inline-block';
+  
+  try{
+    const payload={name,email,password:pass,role};
+    if(role==='student'){
+      payload.rollNumber=roll;
+      payload.coordinator=coord; // Add to payload
+      if(sem) payload.semester=parseInt(sem);
+    }
+    const data=await API.post('/auth/register',payload);
+    if(data.success){
+      localStorage.setItem('token',data.token);
+      localStorage.setItem('user',JSON.stringify(data.user));
+      showToast('Account created! Welcome!','success');
+      setTimeout(()=>{window.location.href=data.user.role==='coordinator'?'coordinator.html':'student.html';},600);
+    }else{err.textContent=data.message||'Registration failed.';err.style.display='block';}
+  }catch(e){err.textContent=e.message||'Server error.';err.style.display='block';}
+  finally{document.getElementById('regTxt').style.display='';document.getElementById('regSpin').style.display='none';}
+}
+
+// Guard: already logged in
+(()=>{const t=localStorage.getItem('token');const u=JSON.parse(localStorage.getItem('user')||'null');if(t&&u)window.location.href=u.role==='coordinator'?'coordinator.html':'student.html';})();
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('loginView').style.display!=='none')handleLogin();});
+</script>
+</body>
+</html>

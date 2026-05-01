@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Intellecta — Coordinator Portal</title>
+<link rel="stylesheet" href="../css/main.css"/>
+</head>
+<body>
+<div class="app-shell">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <div class="nav-item active" id="nav-dashboard" onclick="goTo('dashboard')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span class="tip">Dashboard</span>
+    </div>
+    <div class="nav-item" id="nav-companies" onclick="goTo('companies')">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="tip">Companies</span>
+    </div>
+    <div class="nav-item" id="nav-internships" onclick="goTo('internships')">
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+      <span class="tip">Internships</span>
+    </div>
+    <div class="nav-item" id="nav-applications" onclick="goTo('applications')">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span class="tip">Applications</span>
+    </div>
+    <div class="nav-item" id="nav-students" onclick="goTo('students')">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      <span class="tip">Students</span>
+    </div>
+    <div style="flex:1;"></div>
+    <div class="nav-item" id="nav-profile" onclick="goTo('profile')">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span class="tip">Profile</span>
+    </div>
+    <div class="nav-item" onclick="logout()">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span class="tip">Logout</span>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <header class="topbar">
+      <span class="topbar-brand">
+        <svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:var(--c-lavender-d);stroke-width:2;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Rekroot
+        <span style="font-size:11px;color:var(--c-muted);font-family:var(--font-body);font-weight:500;">· Coordinator</span>
+      </span>
+      <div class="topbar-actions">
+        <div class="search-bar">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="globalSearch" placeholder="Search students…"/>
+        </div>
+        <div class="avatar" id="userAvatar">C</div>
+      </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <div class="page-content active" id="page-dashboard">
+      <div class="greeting-row">
+        <div>
+          <div class="page-h1" id="greetingText">Good morning!</div>
+          <div class="page-sub">Department internship activity overview</div>
+        </div>
+        <button class="btn-primary" onclick="goTo('companies')">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Company
+        </button>
+      </div>
+
+      <div class="dash-grid">
+        <div class="glass stat-card">
+          <div class="card-icon icon-lav"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+          <div class="card-label">Total Students</div>
+          <div class="card-value" id="statStudents">—</div>
+          <div class="card-sub">registered</div>
+        </div>
+        <div class="glass stat-card">
+          <div class="card-icon icon-blu"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
+          <div class="card-label">Companies</div>
+          <div class="card-value" id="statCompanies">—</div>
+          <div class="card-sub">active listings</div>
+        </div>
+        <div class="glass stat-card">
+          <div class="card-icon icon-grn"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="card-label">Offer Letters</div>
+          <div class="card-value" id="statOffers">—</div>
+          <div class="card-sub">submitted</div>
+        </div>
+        <div class="glass stat-card">
+          <div class="card-icon icon-pink"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
+          <div class="card-label">Yet to Apply</div>
+          <div class="card-value" id="statYetToApply">—</div>
+          <div class="card-sub">need follow-up</div>
+        </div>
+      </div>
+
+      <div class="dash-grid-2">
+        <div class="glass section-card">
+          <div class="section-header"><div><div class="section-title">Quick Filters</div><div class="section-sub">Jump to filtered views</div></div></div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="internship-item" onclick="goToFilter('yet-to-apply')">
+              <div class="int-icon" style="background:rgba(247,197,197,0.28);color:#b03030;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
+              <div class="int-info"><div class="int-title">Students Yet to Apply</div><div class="int-company">Need immediate follow-up</div></div>
+              <span class="badge badge-rejected" id="qYet">—</span>
+            </div>
+            <div class="internship-item" onclick="goToFilter('no-offer')">
+              <div class="int-icon" style="background:rgba(252,228,160,0.35);color:#7a5000;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+              <div class="int-info"><div class="int-title">Applied — No Offer Letter</div><div class="int-company">Awaiting submission</div></div>
+              <span class="badge badge-interview" id="qNoOffer">—</span>
+            </div>
+            <div class="internship-item" onclick="goToFilter('with-offer')">
+              <div class="int-icon" style="background:rgba(198,233,126,0.3);color:#5a9010;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div class="int-info"><div class="int-title">Submitted Offer Letters</div><div class="int-company">Placement confirmed</div></div>
+              <span class="badge badge-selected" id="qOffer">—</span>
+            </div>
+            <div class="internship-item" onclick="goToFilter('company-wise')">
+              <div class="int-icon" style="background:rgba(187,212,247,0.3);color:#3a68b0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
+              <div class="int-info"><div class="int-title">Company-wise View</div><div class="int-company">Applications per company</div></div>
+              <span class="badge badge-shortlisted" id="qCompanies">—</span>
+            </div>
+          </div>
+        </div>
+        <div class="glass section-card">
+          <div class="section-header">
+            <div><div class="section-title">Recent Activity</div><div class="section-sub">Latest applications</div></div>
+            <button class="btn-secondary" onclick="goTo('applications')" style="font-size:11px;padding:6px 11px;">View all</button>
+          </div>
+          <div id="dashRecentApps"><div style="text-align:center;padding:20px;color:var(--c-muted);font-size:13px;">Loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPANIES -->
+    <div class="page-content" id="page-companies">
+      <div class="greeting-row">
+        <div><div class="page-h1">Companies</div><div class="page-sub">Manage participating organizations</div></div>
+        <button class="btn-primary" onclick="openAddCompanyModal()">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Company
+        </button>
+      </div>
+      <div class="company-grid" id="companiesGrid"></div>
+    </div>
+
+    <!-- INTERNSHIPS -->
+    <div class="page-content" id="page-internships">
+      <div class="greeting-row">
+        <div><div class="page-h1">Internships</div><div class="page-sub">Manage posted positions</div></div>
+        <button class="btn-primary" onclick="openAddInternshipModal()">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Internship
+        </button>
+      </div>
+      <div id="internshipsList"></div>
+    </div>
+
+    <!-- APPLICATIONS -->
+    <div class="page-content" id="page-applications">
+      <div class="greeting-row"><div><div class="page-h1">Applications</div><div class="page-sub">Filter and monitor student applications</div></div></div>
+      <div class="filter-tabs" id="appFilterTabs">
+        <button class="filter-tab active" onclick="filterApps('all',this)">All Applications</button>
+        <button class="filter-tab" onclick="filterApps('yet-to-apply',this)">Yet to Apply</button>
+        <button class="filter-tab" onclick="filterApps('no-offer',this)">No Offer Letter</button>
+        <button class="filter-tab" onclick="filterApps('with-offer',this)">With Offer Letter</button>
+        <button class="filter-tab" onclick="filterApps('company-wise',this)">Company-wise</button>
+      </div>
+      <div class="glass section-card" style="overflow-x:auto;">
+        <table class="data-table">
+          <thead id="appHead"></thead>
+          <tbody id="appBody"><tr><td colspan="8" style="text-align:center;padding:28px;color:var(--c-muted);">Select a filter to view data</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- STUDENTS -->
+    <div class="page-content" id="page-students">
+      <div class="greeting-row">
+        <div><div class="page-h1">Students</div><div class="page-sub">All registered students</div></div>
+        <div class="search-bar" style="height:38px;">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="studentSearch" placeholder="Search by name, roll, email…" oninput="searchStudents(this.value)" style="width:200px;"/>
+        </div>
+      </div>
+      <div class="glass section-card" style="overflow-x:auto;">
+        <table class="data-table">
+          <thead><tr><th>Student</th><th>Roll No.</th><th>Semester</th><th>Email</th><th>Applications</th><th>Offer Letter</th></tr></thead>
+          <tbody id="studentsBody"><tr><td colspan="6" style="text-align:center;padding:28px;color:var(--c-muted);">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ✅ PROFILE (same as student) -->
+  <div class="page-content" id="page-profile">
+    <div class="greeting-row">
+      <div><div class="page-h1">My Profile</div></div>
+    </div>
+
+    <div class="dash-grid-2">
+      
+      <!-- LEFT: Personal Info -->
+      <div class="glass section-card">
+        <div class="section-title" style="margin-bottom:18px;">Personal Information</div>
+
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" id="pName"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" id="pEmail" disabled/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-input" id="pPhone"/>
+        </div>
+
+        <button class="btn-primary" onclick="updateProfile()" style="margin-top:20px;">
+          Save Changes
+        </button>
+      </div>
+
+      <!-- RIGHT: Password -->
+      <div class="glass section-card">
+        <div class="section-title" style="margin-bottom:18px;">Change Password</div>
+
+        <form onsubmit="event.preventDefault(); changePassword();">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" class="form-input" id="curPwd">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" class="form-input" id="newPwd">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Confirm New Password</label>
+            <input type="password" class="form-input" id="confPwd">
+          </div>
+
+          <button class="btn-primary" type="submit">Update Password</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  
+
+</div>
+
+<!-- Add Company Modal -->
+<div class="modal-overlay" id="addCompanyModal">
+  <div class="modal">
+    <h2>Add Company</h2>
+    <p class="modal-sub">Add a new participating organization</p>
+    <div class="form-group"><label class="form-label">Company Name *</label><input class="form-input" id="cName" placeholder="e.g. Google India"/></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Industry</label><input class="form-input" id="cIndustry" placeholder="Technology"/></div>
+      <div class="form-group"><label class="form-label">Location</label><input class="form-input" id="cLocation" placeholder="Bangalore, India"/></div>
+    </div>
+    <div class="form-group"><label class="form-label">Website</label><input class="form-input" id="cWebsite" placeholder="https://company.com"/></div>
+    <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="cDesc" placeholder="Brief overview…"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('addCompanyModal')">Cancel</button>
+      <button class="btn-primary" onclick="submitCompany()">Add Company</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Internship Modal -->
+<div class="modal-overlay" id="addInternshipModal">
+  <div class="modal">
+    <h2>Post Internship</h2>
+    <p class="modal-sub">Add a new internship opening</p>
+    <div class="form-group"><label class="form-label">Title *</label><input class="form-input" id="iTitle" placeholder="Software Engineering Intern"/></div>
+    <div class="form-group"><label class="form-label">Company *</label><select class="form-select" id="iCompany"><option value="">Select Company</option></select></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Stipend</label><input class="form-input" id="iStipend" placeholder="₹15,000/month"/></div>
+      <div class="form-group"><label class="form-label">Duration</label><input class="form-input" id="iDuration" placeholder="3 months"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Type</label>
+        <select class="form-select" id="iType"><option value="on-site">On-site</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Openings</label><input type="number" class="form-input" id="iOpenings" value="1" min="1"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Application Deadline</label><input type="date" class="form-input" id="iDeadline"/></div>
+      <div class="form-group"><label class="form-label">Skills (comma-separated)</label><input class="form-input" id="iSkills" placeholder="React, Node.js"/></div>
+    </div>
+    <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="iDesc" placeholder="Role description…"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('addInternshipModal')">Cancel</button>
+      <button class="btn-primary" onclick="submitInternship()">Post Internship</button>
+    </div>
+  </div>
+</div>
+  
+<div class="toast-container" id="toastContainer"></div>
+<script src="../js/api.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/coordinator.js"></script>
+</body>
+</html>
